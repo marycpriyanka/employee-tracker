@@ -144,10 +144,12 @@ function addDepartment() {
     }).catch(err => console.log(err));
 }
 
-//
+// Adds a role to the database which user has entered
 function addRole() {
+    // Gets the department names to display as options for the user
     getDepartmentOptions();
 
+    // Prompts the user to enter the name, salary, and department for the role 
     inquirer.prompt([
         {
             message: "Enter the name of the role: ",
@@ -182,10 +184,31 @@ function addRole() {
             name: "department"
         }
     ]).then(response => {
-
+        // Gets the department id from the department name
+        let sql = `SELECT id FROM department WHERE name = ?;`;
+        db.query(sql, response.department, (err, id) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                const departmentId = id[0].id;
+                // Inserts the role to database
+                sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?);`;
+                db.query(sql, [response.title, response.salary, departmentId], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log(`Added role '${response.title}' to the database.`);
+                        displayOptions();
+                    }
+                });
+            }
+        })
     }).catch(err => console.log(err));
 }
 
+// Gets all the department names
 function getDepartmentOptions() {
     const sql = `SELECT name FROM department;`;
     db.query(sql, (err, data) => {
