@@ -60,6 +60,7 @@ function displayOptions() {
                 break;
 
             case "Update an employee role":
+                updateEmployeeRole();
                 break;
 
             case "Exit":
@@ -310,6 +311,67 @@ function addEmployee() {
                             }
                         });
                     }).catch(error => console.log(error));
+                }
+            });
+        }
+    });
+}
+
+function updateEmployeeRole() {
+    // Selects all employee names
+    let sql = `SELECT id, first_name, last_name FROM employee;`;
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            for (let i = 0; i < data.length; i++) {
+                employees.push(data[i]);
+            }
+
+            // Selects all role titles
+            let sql = `SELECT id, title FROM role;`;
+            db.query(sql, (err, data) => {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    for (let i = 0; i < data.length; i++) {
+                        roles.push(data[i]);
+                    }
+
+                    // Prompt to select the employee to update and their new role.
+                    inquirer.prompt([
+                        {
+                            message: "Which employee do you want to update?",
+                            type: "list",
+                            choices: employees.map(employee => ({
+                                name: employee.first_name + " " + employee.last_name,
+                                value: employee.id
+                            })),
+                            name: "employee"
+                        },
+                        {
+                            message: "Enter the new role of the employee.",
+                            type: "list",
+                            choices: roles.map(role => ({
+                                name: role.title,
+                                value: role.id
+                            })),
+                            name: "role"
+                        }
+                    ]).then(response => {
+                        sql = `UPDATE employee SET role_id = ? WHERE id = ?;`;
+                        db.query(sql, [response.role, response.employee], (err, result) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                console.log(`Updated employee's role.`);
+                                displayOptions();
+                            }
+                        })
+                    })
                 }
             });
         }
