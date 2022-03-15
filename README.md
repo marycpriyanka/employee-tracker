@@ -24,7 +24,9 @@ Employee tracker is a command line application to manage a company's employee da
 ## Usage
 
 Invoke the application by typing 'node index' in the command line. When the application is started, user will be presented with a list of options like View all departments, View all roles, View all Employees, Add a department, Add a role, Add an employee, Update an employee role, and Exit. Choose the option needed and answer any questions. User can exit the application by selecting the option 'Exit'. 
+
 Find a walkthrough video that demonstrates the functionality of the employee tracker in the link below.
+
 https://drive.google.com/file/d/1YxBnjuooYGymz1-02sBM2fmAt5gMaAQq/view?usp=sharing
 
 ## Features
