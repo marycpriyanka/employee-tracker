@@ -60,7 +60,7 @@ Employee Tracker is available under the MIT License.
 
 ## How to Contribute
 
-Contributions and ideas are welcome. Before submitting an issue, please take a moment to look over the contributing guidelines in https://www.contributor-covenant.org/ . Before submitting pull requests, ensure the following:
+Contributions and ideas are welcome. We can add additional functionality to the application. Before submitting an issue, please take a moment to look over the contributing guidelines in https://www.contributor-covenant.org/ . Before submitting pull requests, ensure the following:
 
 - Fork the repo and create your branch from master.
 - Test your code.
