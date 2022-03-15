@@ -1,9 +1,9 @@
-# Employee Tracker
+# Employee Management System
 ![badge](https://img.shields.io/badge/MIT-License-blue.svg)
 
 ## Description
 
-Employee tracker is a command line application to manage a company's employee database, using Node.js, Inquirer and MySQL. This application is very useful for business owners to view and manage the departments, roles, and employees in their company so that they can organize and plan their business.
+Employee Management System/ Employee tracker is a command line application to manage a company's employee database, using Node.js, Inquirer and MySQL. This application is very useful for business owners to view and manage the departments, roles, and employees in their company so that they can organize and plan their business.
 
 ## Table of Contents 
 
