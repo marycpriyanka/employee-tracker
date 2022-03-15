@@ -5,6 +5,8 @@ require("console.table");
 require("dotenv").config();
 
 const departments = [];
+const roles = [];
+const employees = [];
 
 // Connects to the database
 const db = mysql.createConnection(
@@ -54,6 +56,7 @@ function displayOptions() {
                 break;
 
             case "Add an employee":
+                addEmployee();
                 break;
 
             case "Update an employee role":
@@ -75,9 +78,9 @@ function viewAllDepartments() {
         }
         else {
             console.table(rows);
-            displayOptions(); 
+            displayOptions();
         }
-    });    
+    });
 }
 
 // Displays the information like id, job title, department and salary of all roles
@@ -169,11 +172,12 @@ function addRole() {
             type: "input",
             name: "salary",
             validate: answer => {
-                if (answer !== "") {
+                const isNumber = answer.match(/^[1-9]\d*$/);
+                if (isNumber) {
                     return true;
                 }
                 else {
-                    return "Please enter the salary."
+                    return "Please enter only numbers for salary";
                 }
             }
         },
@@ -220,7 +224,96 @@ function getDepartmentOptions() {
                 departments.push(data[i]);
             }
         }
-    })
+    });
+}
+
+// Adds an employee to database
+function addEmployee() {
+    // Selects all role titles
+    let sql = `SELECT id, title FROM role;`;
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            for (let i = 0; i < data.length; i++) {
+                roles.push(data[i]);
+            }
+
+            // Selects all employee names
+            sql = `SELECT id, first_name, last_name FROM employee;`;
+            db.query(sql, (err, data) => {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    for (let i = 0; i < data.length; i++) {
+                        employees.push(data[i]);
+                    }
+
+                    // Prompts the user to enter the first name, last name, role and manager of the employee to be added
+                    inquirer.prompt([
+                        {
+                            message: "What is the employee's first name?",
+                            type: "input",
+                            name: "firstName",
+                            validate: answer => {
+                                if (answer !== "") {
+                                    return true;
+                                }
+                                else {
+                                    return "Please enter first name";
+                                }
+                            }
+                        },
+                        {
+                            message: "What is the employee's last name?",
+                            type: "input",
+                            name: "lastName",
+                            validate: answer => {
+                                if (answer !== "") {
+                                    return true;
+                                }
+                                else {
+                                    return "Please enter last name";
+                                }
+                            }
+                        },
+                        {
+                            message: "What is the employee's role?",
+                            type: "list",
+                            choices: roles.map(role => ({
+                                name: role.title,
+                                value: role.id
+                            })),
+                            name: "role"
+                        },
+                        {
+                            message: "Who is the employee's manager",
+                            type: "list",
+                            choices: employees.map(manager => ({
+                                name: manager.first_name + " " + manager.last_name,
+                                value: manager.id
+                            })),
+                            name: "manager"
+                        }
+                    ]).then(response => {
+                        // Adds the new employee to the database
+                        sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?);`;
+                        db.query(sql, [response.firstName, response.lastName, response.role, response.manager], (err, result) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                console.log(`Added the employee, ${response.firstName} ${response.lastName} to the database.`);
+                                displayOptions();
+                            }
+                        });
+                    }).catch(error => console.log(error));
+                }
+            });
+        }
+    });
 }
 
 // Exits the user prompts and ends the connection
